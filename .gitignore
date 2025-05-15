@@ -16,7 +16,6 @@ llm_ctf/toolset/.DS_Store
 keys.cfg
 output*
 successful_tasks*
-*.png
 analysis/*.jsonl
 llm_ctf/prompts/templates/iteration*
 logs/
