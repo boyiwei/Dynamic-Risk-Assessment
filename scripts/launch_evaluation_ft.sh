@@ -40,7 +40,7 @@ git checkout main
 cd cybench
 git checkout nyu-format
 echo "Using the main branch (NYU format) of the cybersecurity dataset for evaluation"
-cd ~/nyuctf_agents
+cd ~/dynamic_risk_assessment
 
 
 model_name="Qwen2.5-Coder-32B-Instruct-ft"

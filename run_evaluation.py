@@ -135,8 +135,8 @@ if __name__ == '__main__':
                 task_name = ("challenge_" + task.split(" ")[-1]).replace("#", "")
             if args.task_mask:
                 with open(args.task_mask, 'r') as f:
-                    task_mask = [line.strip() for line in f.readlines()]
-                if task_name in task_mask:
+                    task_mask = [line.split('-')[-1].strip() for line in f.readlines()]
+                if task_name not in task_mask:
                     print(f"Skipping task {task}...")
                     continue
             print(f"Running task {task}...")

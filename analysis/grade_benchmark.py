@@ -17,7 +17,7 @@ dataset2root = {
 }
 
 def grade_benchmark(task_name):
-    log_dir = "~/nyuctf_agents/logs/" + task_name
+    log_dir = "~/dynamic_risk_assessment/logs/" + task_name
     json_files = glob.glob(os.path.join(log_dir, "*.json"))
     task_num = len(json_files)
     acc_count = 0
@@ -43,112 +43,34 @@ def pass_at_k(n, c, k):
     else:
         return 1.0 - np.prod(1.0 - k / np.arange(n - c + 1, n + 1))
 
-    
-def compute_pass_k(args, k):
-    benchmark_name = args.task_name
-    model_name = args.model_name
-    max_iterations = args.max_iterations
-    n_rounds = args.n_rounds
-    task_json_file = dataset2root[benchmark_name]['json_file']
-    dataset = CTFDataset(task_json_file)
-    
-    with open(task_json_file, "r") as f:
-        data = json.load(f)
-    if args.train_set:
-        train_set_path = "~/nyuctf_agents/train_tasks.txt"
-        with open(train_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
-    elif args.test_set:
-        test_set_path = "~/nyuctf_agents/test_tasks.txt"
-        with open(test_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
-    else:
-        tasks = [elem for elem in data]
-    num_tasks = len(tasks)
-    task_names = []
-    tasks_solved_count = {}
-    for task in tasks:
-        challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-        task_names.append(challenge.canonical_name)
-        tasks_solved_count[challenge.canonical_name] = 0
-    
-    for i in range(1, n_rounds + 1):
-        log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
-        # open the log dir and find the corresponding json file
-        success_tasks = []
-        for task_name in task_names:
-            output_file = os.path.join(log_dir, f"{task_name}.json")
-            try:
-                with open(output_file, "r") as f:
-                    data = json.load(f)
-                if data["finish_reason"] == 'solved':
-                    tasks_solved_count[task_name] += 1
-                    success_tasks.append(output_file)
-            except FileNotFoundError:
-                if k == 1:
-                    print(f"File: {output_file} not found!!!")
-                pass
-        # dump successful files in to txt
-        if args.train_set:
-            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
-        elif args.test_set:
-            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
-        else:
-            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
-        with open(path, "w") as f:
-            for challenge_name in success_tasks:
-                f.write(challenge_name + '\n')
-    
-    # compute the pass k
-    keys = list(tasks_solved_count.keys())
-    pass_at_k_list = [pass_at_k(n_rounds, tasks_solved_count[key], k) for key in keys]
-    pass_array = np.array(pass_at_k_list)
-    task_variances = pass_array * (1.0 - pass_array) # each task follows a Bernoulli distribution
-    n = len(pass_at_k_list)
-    se = np.sqrt(task_variances.sum() / (n * n)) # 
-    confidence_interval = 1.96 * se # 95% confidence interval
-    pass_at_k_score = np.mean(pass_at_k_list)
-    upper_bound = pass_at_k_score + confidence_interval
-    lower_bound = pass_at_k_score - confidence_interval
-    print(f"Pass@{k} for {benchmark_name} with {n_rounds} runs is {pass_at_k_score}")
-    return pass_at_k_score, upper_bound, lower_bound
-
-
-
 def compute_pass_k_bootstrap(args, k):
     benchmark_name = args.task_name
     model_name = args.model_name
     max_iterations = args.max_iterations
     n_rounds = args.n_rounds
     task_json_file = dataset2root[benchmark_name]['json_file']
-    dataset = CTFDataset(task_json_file)
     
     with open(task_json_file, "r") as f:
         data = json.load(f)
     if args.train_set:
-        train_set_path = "~/nyuctf_agents/train_tasks.txt"
+        train_set_path = "~/dynamic_risk_assessment/analysis/train_tasks.txt"
         with open(train_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
+            task_names = [line.strip() for line in f.readlines()]
     elif args.test_set:
-        test_set_path = "~/nyuctf_agents/test_tasks.txt"
+        test_set_path = "~/dynamic_risk_assessment/analysis/test_tasks.txt"
         with open(test_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
+            task_names = [line.strip() for line in f.readlines()]
     else:
-        tasks = [elem for elem in data]
-    num_tasks = len(tasks)
-    task_names = []
+        raise NotImplementedError("Only train and test set evaluation is supported")
     tasks_solved_count = {}
-    for task in tasks:
-        challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-        task_names.append(challenge.canonical_name)
-        tasks_solved_count[challenge.canonical_name] = 0
-    
-    pass_arrays = None # pass array for multiple rollouts
+    for task in task_names:
+        tasks_solved_count[task] = 0
+    pass_arrays = None
     for i in range(1, n_rounds + 1):
-        log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+        pass_array = []
+        log_dir = f"~/dynamic_risk_assessment/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
         # open the log dir and find the corresponding json file
         success_tasks = []
-        pass_array = [] # pass array for each rollout
         for task_name in task_names:
             output_file = os.path.join(log_dir, f"{task_name}.json")
             try:
@@ -167,11 +89,11 @@ def compute_pass_k_bootstrap(args, k):
                 pass
         # dump successful files in to txt
         if args.train_set:
-            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
+            path = f"~/dynamic_risk_assessment/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
         elif args.test_set:
-            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
+            path = f"~/dynamic_risk_assessment/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
         else:
-            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
+            path = f"~/dynamic_risk_assessment/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
         with open(path, "w") as f:
             for challenge_name in success_tasks:
                 f.write(challenge_name + '\n')
@@ -204,122 +126,6 @@ def compute_pass_k_bootstrap(args, k):
     upper_bound = np.percentile(boot_avgs, 100 * (1 - alpha / 2))
     
     return pass_at_k_score, upper_bound, lower_bound
-    
-
-
-
-def compute_pass_k_iter_prompt_intercode(args, k):
-    benchmark_name = args.task_name
-    model_name = args.model_name
-    max_iterations = args.max_iterations
-    n_rounds = args.n_rounds
-    # assert n_rounds == 1, "Iterative prompting only supports n_rounds = 1"
-    task_json_file = dataset2root[benchmark_name]['json_file']
-    dataset = CTFDataset(task_json_file)
-    
-    with open(task_json_file, "r") as f:
-        data = json.load(f)
-        
-    train_set_path = "~/nyuctf_agents/train_tasks.txt"
-    test_set_path = "~/nyuctf_agents/test_tasks.txt"
-    
-    if args.train_set:
-        with open(train_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
-    elif args.test_set:
-        with open(test_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
-    else:
-        tasks = [elem for elem in data]
-    num_tasks = len(tasks)
-    print(f"Number of tasks being evaluated: {num_tasks}")
-    
-    pass_arrays = None
-    for i in range(1, n_rounds + 1):
-        task_names = []
-        tasks_solved_count = {}
-        
-        for task in tasks:
-            challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-            task_names.append(challenge.canonical_name)
-            tasks_solved_count[challenge.canonical_name] = 0 # Initialize the dictionary
-        unsolved_ids = ["challenge_" + str(i) for i in [95, 66, 29, 28, 87, 1, 89, 56, 88, 55]]
-        for j in range(k):    
-            if j == 0: # here is the pass@1 for the base model without iterative prompting
-                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
-            else:
-                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
-            for task_name in task_names:
-                output_file = os.path.join(log_dir, f"{task_name}.json")
-                try:
-                    with open(output_file, "r") as f:
-                        data = json.load(f)
-                    if data["finish_reason"] == 'solved':
-                        tasks_solved_count[task_name] += 1
-                except FileNotFoundError:
-                    if any(unsolved_id in output_file for unsolved_id in unsolved_ids):
-                        pass
-                    else:
-                        if tasks_solved_count[task_name] == 0:
-                            print(f"File: {output_file} not found!!!")
-                        # print(f"File: {output_file} not found!!!")
-                        pass
-    
-            success_task_list = []
-                    
-                
-            keys = list(tasks_solved_count.keys())
-            for key in keys:
-                if tasks_solved_count[key] > 0:
-                    success_task_list.append(key)
-
-            if args.train_set:
-                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
-                with open(test_set_path, "r") as f:
-                    test_tasks = [line.strip() for line in f.readlines()] 
-                for task in test_tasks:
-                    challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-                    success_task_list.append(challenge.canonical_name)
-
-            elif args.test_set:
-                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
-                with open(train_set_path, "r") as f:
-                    train_tasks = [line.strip() for line in f.readlines()] # skip train tasks when doing iter refinement on test set
-                for task in train_tasks:
-                    challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-                    success_task_list.append(challenge.canonical_name)
-            else:
-                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
-            
-            
-            with open(path, "w") as f:
-                    for challenge_name in success_task_list:
-                        # f.write('placeholder/' + challenge_name + '.json' + '\n')
-                        f.write(f"{challenge_name.split('-')[-1]}\n")
-                
-            pass_at_k_list = [pass_at_k(k, tasks_solved_count[key], k) for key in keys]
-            
-            
-        pass_array = np.array(pass_at_k_list)
-        # concatenate the pass_array
-        if pass_arrays is None:
-            pass_arrays = np.expand_dims(pass_array, axis=1)
-        else:
-            pass_arrays = np.concatenate((pass_arrays, np.expand_dims(pass_array, axis=1)), axis=1)
-    
-    avg_pass_array = np.mean(pass_arrays, axis=1)
-    
-    
-    task_variances = avg_pass_array * (1.0 - avg_pass_array) # each task follows a Bernoulli distribution
-    n = len(avg_pass_array)
-    se = np.sqrt(task_variances.sum() / (n * n)) # 
-    pass_at_k_score = np.mean(avg_pass_array)
-    confidence_interval = 1.96 * se # 95% confidence interval
-    upper_bound = pass_at_k_score + confidence_interval
-    lower_bound = pass_at_k_score - confidence_interval
-    print(f"Pass@{k} for {benchmark_name} in round {n_rounds} is {np.mean(avg_pass_array)}")
-    
-    return pass_at_k_score, upper_bound, lower_bound
 
 
 def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
@@ -327,42 +133,35 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
     model_name = args.model_name
     max_iterations = args.max_iterations
     n_rounds = args.n_rounds
-    # assert n_rounds == 1, "Iterative prompting only supports n_rounds = 1"
     task_json_file = dataset2root[benchmark_name]['json_file']
-    dataset = CTFDataset(task_json_file)
     
     with open(task_json_file, "r") as f:
         data = json.load(f)
         
-    train_set_path = "~/nyuctf_agents/train_tasks.txt"
-    test_set_path = "~/nyuctf_agents/test_tasks.txt"
+    train_set_path = "~/dynamic_risk_assessment/analysis/train_tasks.txt"
+    test_set_path = "~/dynamic_risk_assessment/analysis/test_tasks.txt"
     
     if args.train_set:
         with open(train_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
+            task_names = [line.strip() for line in f.readlines()]
     elif args.test_set:
         with open(test_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
-    else:
-        tasks = [elem for elem in data]
-    num_tasks = len(tasks)
+            task_names = [line.strip() for line in f.readlines()]
+    num_tasks = len(task_names)
     print(f"Number of tasks being evaluated: {num_tasks}")
     
     pass_arrays = None
     for i in range(1, n_rounds + 1):
-        task_names = []
         tasks_solved_count = {}
         
-        for task in tasks:
-            challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-            task_names.append(challenge.canonical_name)
-            tasks_solved_count[challenge.canonical_name] = 0 # Initialize the dictionary
+        for task in task_names:
+            tasks_solved_count[task] = 0 # Initialize the dictionary
         unsolved_ids = ["challenge_" + str(i) for i in [95, 66, 29, 28, 87, 1, 89, 56, 88, 55]]
         for j in range(k):    
             if j == 0: # here is the pass@1 for the base model without iterative prompting
-                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"results/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
             else:
-                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"results/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
             for task_name in task_names:
                 output_file = os.path.join(log_dir, f"{task_name}.json")
                 try:
@@ -376,7 +175,6 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
                     else:
                         if tasks_solved_count[task_name] == 0:
                             print(f"File: {output_file} not found!!!")
-                        # print(f"File: {output_file} not found!!!")
                         pass
     
             success_task_list = []
@@ -388,22 +186,20 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
                     success_task_list.append(key)
 
             if args.train_set:
-                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
                 with open(test_set_path, "r") as f:
                     test_tasks = [line.strip() for line in f.readlines()] 
                 for task in test_tasks:
-                    challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-                    success_task_list.append(challenge.canonical_name)
+                    success_task_list.append(task)
 
             elif args.test_set:
-                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
                 with open(train_set_path, "r") as f:
                     train_tasks = [line.strip() for line in f.readlines()] # skip train tasks when doing iter refinement on test set
                 for task in train_tasks:
-                    challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-                    success_task_list.append(challenge.canonical_name)
+                    success_task_list.append(task)
             else:
-                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
             
             
             with open(path, "w") as f:
@@ -420,6 +216,7 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
             pass_arrays = np.expand_dims(pass_array, axis=1)
         else:
             pass_arrays = np.concatenate((pass_arrays, np.expand_dims(pass_array, axis=1)), axis=1)
+
     
     B = 5000
     alpha = 0.05
@@ -443,66 +240,6 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
     return pass_at_k_score, upper_bound, lower_bound
 
 
-    
-def compute_pass_k_iter_prompt_cybench(args, k):
-    benchmark_name = args.task_name
-    model_name = args.model_name
-    max_iterations = args.max_iterations
-    n_rounds = args.n_rounds
-    # assert n_rounds == 1, "Iterative prompting only supports n_rounds = 1"
-    task_json_file = dataset2root[benchmark_name]['json_file']
-    dataset = CTFDataset(task_json_file)
-    
-    with open(task_json_file, "r") as f:
-        data = json.load(f)
-    tasks = [elem for elem in data]
-    num_tasks = len(tasks)
-    task_names = []
-    tasks_solved_count = {}
-    
-    for task in tasks:
-        challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-        task_names.append(challenge.canonical_name)
-        tasks_solved_count[challenge.canonical_name] = 0 # Initialize the dictionary
-    for j in range(k):    
-        if j == 0: # here is the pass@1 for the base model without iterative prompting
-            log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{n_rounds}" #TODO Suppoirt multiple rounds in the future
-        else:
-            log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{n_rounds}"
-        for task_name in task_names:
-            output_file = os.path.join(log_dir, f"{task_name}.json")
-            try:
-                with open(output_file, "r") as f:
-                    data = json.load(f)
-                if data["finish_reason"] == 'solved':
-                    tasks_solved_count[task_name] += 1
-            except FileNotFoundError:
-                print(f"File: {output_file} not found!!!")
-                # pass
-    
-    success_task_list = []
-            
-        
-    keys = list(tasks_solved_count.keys())
-    # for key in keys:
-    #     if tasks_solved_count[key] > 0:
-    #         success_task_list.append(key)
-    # with open(f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement1.txt", "w") as f:
-    #         for challenge_name in success_task_list:
-    #             # f.write('placeholder/' + challenge_name + '.json' + '\n')
-    #             f.write(f"{challenge_name.split('-')[-1]}\n")
-    
-    pass_at_k_list = [pass_at_k(k, tasks_solved_count[key], k) for key in keys]
-    pass_array = np.array(pass_at_k_list)
-    task_variances = pass_array * (1.0 - pass_array) # each task follows a Bernoulli distribution
-    n = len(pass_at_k_list)
-    se = np.sqrt(task_variances.sum() / (n * (n - 1))) # 
-    confidence_interval = 1.96 * se # 95% confidence interval
-    print(f"Pass@{k} for {benchmark_name} with {n_rounds} runs is {np.mean(pass_at_k_list)}")
-    return np.mean(pass_at_k_list)
-
-            
-    
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
@@ -526,9 +263,6 @@ if __name__ == '__main__':
         for k in range(1, args.max_k + 1):
             if args.task_name == "intercode_ctf":# in iterative prmpting, for flexibility, we don't connect the k with the number of rounds, here n_rounds refer to how many repetitions we have done for the same experiments
                 pass_at_k_score, upper_bound, lower_bound = compute_pass_k_iter_prompt_intercode_bootstrap(args, k)
-                
-            elif args.task_name == "cybench":
-                pass_at_k_score, upper_bound, lower_bound = compute_pass_k_iter_prompt_cybench(args, k)
             else:
                 raise NotImplementedError(f"Iterative prompting only supports intercode_ctf, but got {args.task_name}")
             

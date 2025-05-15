@@ -93,9 +93,9 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument('--iteration', type=int, default=1)
     args.add_argument('--round', type=int, default=1)
-    args.add_argument('--logs_dir', type=str, default='~/nyuctf_agents/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round1')
+    args.add_argument('--logs_dir', type=str, default='~/dynamic_risk_assessment/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round1')
     args = args.parse_args()
-    txt_file = f"~/nyuctf_agents/iter_prompt_refinement/added_rules_iter{args.iteration}_round{args.round}.json"   
+    txt_file = f"~/dynamic_risk_assessment/iter_prompt_refinement/added_rules_iter{args.iteration}_round{args.round}.json"   
     if os.path.exists(txt_file):
         print(f"File {txt_file} already exists. Skipping generation.")
         exit(0)

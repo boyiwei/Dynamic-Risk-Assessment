@@ -6,7 +6,7 @@ import argparse
 
 def convert_rules_to_template(iteration, round):
     
-    with open(f"~/nyuctf_agents/iter_prompt_refinement/added_rules_iter{iteration}_round{round}.json", "r") as f:
+    with open(f"~/dynamic_risk_assessment/iter_prompt_refinement/added_rules_iter{iteration}_round{round}.json", "r") as f:
         rules = json.load(f)
         
     with open("~/SWE-agent-datasets/Intercode_CTF/intercode_dataset.json", "r") as f:
@@ -22,14 +22,14 @@ def convert_rules_to_template(iteration, round):
                 # generate the customized prompt template
                 # Check if the destination directory exists and remove it if it does
                 if iteration == 1:
-                    previous_dir = "~/nyuctf_agents/llm_ctf/prompts/templates/default"
+                    previous_dir = "~/dynamic_risk_assessment/llm_ctf/prompts/templates/default"
                 else:
-                    previous_dir = f"~/nyuctf_agents/llm_ctf/prompts/templates/iteration_{iteration - 1}_{task}"
+                    previous_dir = f"~/dynamic_risk_assessment/llm_ctf/prompts/templates/iteration_{iteration - 1}_{task}"
                 if os.path.exists(previous_dir): # we only select the one that falied in the previous iteration, otherwise the task has already completed.
                     orig_dir = previous_dir
                 else:
                     continue
-                destination_dir = f"~/nyuctf_agents/llm_ctf/prompts/templates/iteration_{iteration}_{task}"
+                destination_dir = f"~/dynamic_risk_assessment/llm_ctf/prompts/templates/iteration_{iteration}_{task}"
                 if os.path.exists(destination_dir):
                     shutil.rmtree(destination_dir)
                 subprocess.run(["cp", "-r", orig_dir, destination_dir])

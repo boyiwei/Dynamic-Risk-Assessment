@@ -3,7 +3,7 @@ import json
 import re
 
 
-successful_task_list = "~/nyuctf_agents/analysis/successful_tasks_lists/intercode_ctf_Qwen2.5-Coder-32B-Instruct.txt"
+successful_task_list = "~/dynamic_risk_assessment/analysis/successful_tasks_lists/intercode_ctf_Qwen2.5-Coder-32B-Instruct.txt"
 benchmark_task_list = "~/SWE-agent-datasets/Intercode_CTF/intercode_dataset.json"
 benchmark_base_dir = "~/SWE-agent-datasets/Intercode_CTF/"
 
