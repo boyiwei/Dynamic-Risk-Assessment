@@ -10,14 +10,14 @@ import numpy as np
 
 
 dataset2root = {
-    'nyu_ctf_test': {"root_dir": "/home/boyiwei/SWE-agent-datasets/NYU_CTF_Bench/", "json_file": "/home/boyiwei/SWE-agent-datasets/NYU_CTF_Bench/test_dataset.json"},
-    'nyu_ctf_train': {"root_dir": "/home/boyiwei/SWE-agent-datasets/NYU_CTF_Bench/", "json_file": "/home/boyiwei/SWE-agent-datasets/NYU_CTF_Bench/development_dataset.json"},
-    'cybench': {"root_dir": "/home/boyiwei/SWE-agent-datasets/cybench/", "json_file": "/home/boyiwei/SWE-agent-datasets/cybench/cybench.json"},
-    'intercode_ctf': {"root_dir": "/home/boyiwei/SWE-agent-datasets/Intercode_CTF/", "json_file": "/home/boyiwei/SWE-agent-datasets/Intercode_CTF/intercode_dataset.json"},
+    'nyu_ctf_test': {"root_dir": "~/SWE-agent-datasets/NYU_CTF_Bench/", "json_file": "~/SWE-agent-datasets/NYU_CTF_Bench/test_dataset.json"},
+    'nyu_ctf_train': {"root_dir": "~/SWE-agent-datasets/NYU_CTF_Bench/", "json_file": "~/SWE-agent-datasets/NYU_CTF_Bench/development_dataset.json"},
+    'cybench': {"root_dir": "~/SWE-agent-datasets/cybench/", "json_file": "~/SWE-agent-datasets/cybench/cybench.json"},
+    'intercode_ctf': {"root_dir": "~/SWE-agent-datasets/Intercode_CTF/", "json_file": "~/SWE-agent-datasets/Intercode_CTF/intercode_dataset.json"},
 }
 
 def grade_benchmark(task_name):
-    log_dir = "/home/boyiwei/nyuctf_agents/logs/boyiwei/" + task_name
+    log_dir = "~/nyuctf_agents/logs/" + task_name
     json_files = glob.glob(os.path.join(log_dir, "*.json"))
     task_num = len(json_files)
     acc_count = 0
@@ -55,11 +55,11 @@ def compute_pass_k(args, k):
     with open(task_json_file, "r") as f:
         data = json.load(f)
     if args.train_set:
-        train_set_path = "/home/boyiwei/nyuctf_agents/train_tasks.txt"
+        train_set_path = "~/nyuctf_agents/train_tasks.txt"
         with open(train_set_path, "r") as f:
             tasks = [line.strip() for line in f.readlines()]
     elif args.test_set:
-        test_set_path = "/home/boyiwei/nyuctf_agents/test_tasks.txt"
+        test_set_path = "~/nyuctf_agents/test_tasks.txt"
         with open(test_set_path, "r") as f:
             tasks = [line.strip() for line in f.readlines()]
     else:
@@ -73,7 +73,7 @@ def compute_pass_k(args, k):
         tasks_solved_count[challenge.canonical_name] = 0
     
     for i in range(1, n_rounds + 1):
-        log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+        log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
         # open the log dir and find the corresponding json file
         success_tasks = []
         for task_name in task_names:
@@ -90,11 +90,11 @@ def compute_pass_k(args, k):
                 pass
         # dump successful files in to txt
         if args.train_set:
-            path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
+            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
         elif args.test_set:
-            path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
+            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
         else:
-            path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
+            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
         with open(path, "w") as f:
             for challenge_name in success_tasks:
                 f.write(challenge_name + '\n')
@@ -126,11 +126,11 @@ def compute_pass_k_bootstrap(args, k):
     with open(task_json_file, "r") as f:
         data = json.load(f)
     if args.train_set:
-        train_set_path = "/home/boyiwei/nyuctf_agents/train_tasks.txt"
+        train_set_path = "~/nyuctf_agents/train_tasks.txt"
         with open(train_set_path, "r") as f:
             tasks = [line.strip() for line in f.readlines()]
     elif args.test_set:
-        test_set_path = "/home/boyiwei/nyuctf_agents/test_tasks.txt"
+        test_set_path = "~/nyuctf_agents/test_tasks.txt"
         with open(test_set_path, "r") as f:
             tasks = [line.strip() for line in f.readlines()]
     else:
@@ -145,7 +145,7 @@ def compute_pass_k_bootstrap(args, k):
     
     pass_arrays = None # pass array for multiple rollouts
     for i in range(1, n_rounds + 1):
-        log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+        log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
         # open the log dir and find the corresponding json file
         success_tasks = []
         pass_array = [] # pass array for each rollout
@@ -167,11 +167,11 @@ def compute_pass_k_bootstrap(args, k):
                 pass
         # dump successful files in to txt
         if args.train_set:
-            path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
+            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
         elif args.test_set:
-            path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
+            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
         else:
-            path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
+            path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
         with open(path, "w") as f:
             for challenge_name in success_tasks:
                 f.write(challenge_name + '\n')
@@ -220,8 +220,8 @@ def compute_pass_k_iter_prompt_intercode(args, k):
     with open(task_json_file, "r") as f:
         data = json.load(f)
         
-    train_set_path = "/home/boyiwei/nyuctf_agents/train_tasks.txt"
-    test_set_path = "/home/boyiwei/nyuctf_agents/test_tasks.txt"
+    train_set_path = "~/nyuctf_agents/train_tasks.txt"
+    test_set_path = "~/nyuctf_agents/test_tasks.txt"
     
     if args.train_set:
         with open(train_set_path, "r") as f:
@@ -246,9 +246,9 @@ def compute_pass_k_iter_prompt_intercode(args, k):
         unsolved_ids = ["challenge_" + str(i) for i in [95, 66, 29, 28, 87, 1, 89, 56, 88, 55]]
         for j in range(k):    
             if j == 0: # here is the pass@1 for the base model without iterative prompting
-                log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
             else:
-                log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
             for task_name in task_names:
                 output_file = os.path.join(log_dir, f"{task_name}.json")
                 try:
@@ -274,7 +274,7 @@ def compute_pass_k_iter_prompt_intercode(args, k):
                     success_task_list.append(key)
 
             if args.train_set:
-                path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
                 with open(test_set_path, "r") as f:
                     test_tasks = [line.strip() for line in f.readlines()] 
                 for task in test_tasks:
@@ -282,14 +282,14 @@ def compute_pass_k_iter_prompt_intercode(args, k):
                     success_task_list.append(challenge.canonical_name)
 
             elif args.test_set:
-                path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
                 with open(train_set_path, "r") as f:
                     train_tasks = [line.strip() for line in f.readlines()] # skip train tasks when doing iter refinement on test set
                 for task in train_tasks:
                     challenge = CTFChallenge(dataset.get(task), dataset.basedir)
                     success_task_list.append(challenge.canonical_name)
             else:
-                path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
             
             
             with open(path, "w") as f:
@@ -334,8 +334,8 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
     with open(task_json_file, "r") as f:
         data = json.load(f)
         
-    train_set_path = "/home/boyiwei/nyuctf_agents/train_tasks.txt"
-    test_set_path = "/home/boyiwei/nyuctf_agents/test_tasks.txt"
+    train_set_path = "~/nyuctf_agents/train_tasks.txt"
+    test_set_path = "~/nyuctf_agents/test_tasks.txt"
     
     if args.train_set:
         with open(train_set_path, "r") as f:
@@ -360,9 +360,9 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
         unsolved_ids = ["challenge_" + str(i) for i in [95, 66, 29, 28, 87, 1, 89, 56, 88, 55]]
         for j in range(k):    
             if j == 0: # here is the pass@1 for the base model without iterative prompting
-                log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
             else:
-                log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
             for task_name in task_names:
                 output_file = os.path.join(log_dir, f"{task_name}.json")
                 try:
@@ -388,7 +388,7 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
                     success_task_list.append(key)
 
             if args.train_set:
-                path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
                 with open(test_set_path, "r") as f:
                     test_tasks = [line.strip() for line in f.readlines()] 
                 for task in test_tasks:
@@ -396,14 +396,14 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
                     success_task_list.append(challenge.canonical_name)
 
             elif args.test_set:
-                path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
                 with open(train_set_path, "r") as f:
                     train_tasks = [line.strip() for line in f.readlines()] # skip train tasks when doing iter refinement on test set
                 for task in train_tasks:
                     challenge = CTFChallenge(dataset.get(task), dataset.basedir)
                     success_task_list.append(challenge.canonical_name)
             else:
-                path = f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
             
             
             with open(path, "w") as f:
@@ -466,9 +466,9 @@ def compute_pass_k_iter_prompt_cybench(args, k):
         tasks_solved_count[challenge.canonical_name] = 0 # Initialize the dictionary
     for j in range(k):    
         if j == 0: # here is the pass@1 for the base model without iterative prompting
-            log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{n_rounds}" #TODO Suppoirt multiple rounds in the future
+            log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{n_rounds}" #TODO Suppoirt multiple rounds in the future
         else:
-            log_dir = f"/home/boyiwei/nyuctf_agents/logs/boyiwei/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{n_rounds}"
+            log_dir = f"~/nyuctf_agents/logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{n_rounds}"
         for task_name in task_names:
             output_file = os.path.join(log_dir, f"{task_name}.json")
             try:
@@ -487,7 +487,7 @@ def compute_pass_k_iter_prompt_cybench(args, k):
     # for key in keys:
     #     if tasks_solved_count[key] > 0:
     #         success_task_list.append(key)
-    # with open(f"/home/boyiwei/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement1.txt", "w") as f:
+    # with open(f"~/nyuctf_agents/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement1.txt", "w") as f:
     #         for challenge_name in success_task_list:
     #             # f.write('placeholder/' + challenge_name + '.json' + '\n')
     #             f.write(f"{challenge_name.split('-')[-1]}\n")

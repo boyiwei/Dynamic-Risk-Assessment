@@ -2,7 +2,7 @@
 
 for iteration in {3..10}; do
 
-logs_dir=/home/boyiwei/nyuctf_agents/logs/boyiwei/intercode_ctf_Qwen2.5-Coder-32B-Instruct_iterprompt$((iteration - 1))_maxiter_20_round1
+logs_dir=~/nyuctf_agents/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_iterprompt$((iteration - 1))_maxiter_20_round1
 
 
 echo "Starting prompt refinement iteration $iteration"

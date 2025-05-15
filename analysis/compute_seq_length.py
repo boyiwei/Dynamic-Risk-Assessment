@@ -49,6 +49,6 @@ def compute_seq_length(dataset_path, tokenizer):
 
 if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-Coder-32B-Instruct")
-    dataset_path = "/home/boyiwei/nyuctf_agents/analysis/successful_tasks_intercode_ctf_Qwen2_single-turn_subsettrain.jsonl"
+    dataset_path = "~/nyuctf_agents/analysis/successful_tasks_intercode_ctf_Qwen2_single-turn_subsettrain.jsonl"
     max_len = compute_seq_length(dataset_path, tokenizer)
     print(max_len)

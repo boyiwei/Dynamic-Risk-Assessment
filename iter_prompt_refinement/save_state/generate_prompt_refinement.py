@@ -42,16 +42,16 @@ def find_folders(directory, test_set, task="intercode"):
     # matching_folders = []
     file_list = []
     if task == "intercode":
-        task_json_file = "/home/boyiwei/SWE-agent-datasets/Intercode_CTF/intercode_dataset.json"
+        task_json_file = "~/SWE-agent-datasets/Intercode_CTF/intercode_dataset.json"
     elif task == "cybench":
-        task_json_file = "/home/boyiwei/SWE-agent-datasets/cybench/cybench.json"
+        task_json_file = "~/SWE-agent-datasets/cybench/cybench.json"
         
     dataset = CTFDataset(task_json_file)
     
     task_names = []
     
     if test_set:
-        test_set_path = "/home/boyiwei/nyuctf_agents/test_tasks.txt"
+        test_set_path = "~/nyuctf_agents/test_tasks.txt"
         with open(test_set_path, "r") as f:
             tasks = [line.strip() for line in f.readlines()]
     else:
@@ -151,14 +151,14 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument('--iteration', type=int, default=1)
     args.add_argument('--round', type=int, default=1)
-    args.add_argument('--logs_dir', type=str, default='/home/boyiwei/nyuctf_agents/logs/boyiwei/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round1')
+    args.add_argument('--logs_dir', type=str, default='~/nyuctf_agents/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round1')
     args.add_argument('--test_set', action='store_true')
     args.add_argument('--skip_existing', action='store_true', help="Skip existing files")
     args.add_argument('--task', type=str, default='intercode')
 
     
     args = args.parse_args()
-    json_file = f"/home/boyiwei/nyuctf_agents/iter_prompt_refinement/save_state/{args.task}_iter{args.iteration}_round{args.round}.json"   
+    json_file = f"~/nyuctf_agents/iter_prompt_refinement/save_state/{args.task}_iter{args.iteration}_round{args.round}.json"   
     if args.skip_existing:
         if os.path.exists(json_file):
             print(f"File {json_file} already exists. Skipping generation.")
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     
     strategies = {}
     if args.iteration > 1:
-        prior_strategy_path = f"/home/boyiwei/nyuctf_agents/iter_prompt_refinement/save_state/{args.task}_iter{args.iteration - 1}_round{args.round}.json"
+        prior_strategy_path = f"~/nyuctf_agents/iter_prompt_refinement/save_state/{args.task}_iter{args.iteration - 1}_round{args.round}.json"
         with open(prior_strategy_path, "r") as f:
             prior_strategies = json.load(f)
         print(f"length of prior strategies: {len(prior_strategies)}")
