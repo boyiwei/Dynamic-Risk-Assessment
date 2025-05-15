@@ -40,13 +40,12 @@ model_name="Qwen2.5-Coder-32B-Instruct-ft"
 # Intercode evaluation
 ft_epoch=10
 lr=1e-5
-ft_dataset="intercode_nyuagent_singleturn_10runs_subset_train"
+ft_dataset="ctf_intercode_nyuagent_singleturn_train"
 
 ft_paradigm="fullparam"
 max_iter=20
 
 parallelism=10
-temperature=0.6
 # Launch evaluations for i in 1,2,3,4 in parallel and log output to output_i.txt
 for dataset in "intercode_ctf"; do
 echo "Evaluating dataset: ${dataset}"
@@ -61,8 +60,7 @@ for j in $(seq 1 $parallelism); do
             --max_iterations "${max_iter}" \
             --config config/local_config.yaml \
             --round "${i}" \
-            --temperature "${temperature}" \
-            --name "${dataset}_${model_name}_ft_${ft_dataset}_${ft_epoch}_lr_${lr}_temp${temperature}_${ft_paradigm}_maxiter_${max_iter}" \
+            --name "${dataset}_${model_name}_ft_${ft_dataset}_${ft_epoch}_lr_${lr}_${ft_paradigm}_maxiter_${max_iter}" \
             --network "ctfnet${j}" \
             --container_name "ctf_env${j}"
       done

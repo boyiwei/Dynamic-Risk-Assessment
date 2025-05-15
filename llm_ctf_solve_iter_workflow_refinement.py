@@ -367,7 +367,7 @@ def main():
                         args=args
                     )
     
-    adas_file_path = "/home/boyiwei/NYU-Agents-ADAS/ADAS/ctf_results_run_archive.json"
+    adas_file_path = "~/Dynamic-Risk-Assessment/iter_workflow_refinement/ctf_results_run_archive.json"
     with open(adas_file_path, "r") as f:
         adas_file = json.load(f)
     forward_str = adas_file[args.adas_iter_round]['code'] # get the latest agent workflow

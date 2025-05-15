@@ -9,12 +9,12 @@ def compute_time(args):
     time_list = []
     for round in range(1, 11):
     
-        file_dir = f"~/dynamic_risk_assessment/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round{round}/"
+        file_dir = f"~/Dynamic-Risk-Assessment/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round{round}/"
         # find all json files in the directory
         json_files = [f for f in os.listdir(file_dir) if f.endswith('.json')]
         
-        task_mask = "~/dynamic_risk_assessment/analysis/train_tasks.txt"
-        unsolvable_task_mask = "~/dynamic_risk_assessment/analysis/unsolvable_tasks.txt"
+        task_mask = "~/Dynamic-Risk-Assessment/analysis/train_tasks.txt"
+        unsolvable_task_mask = "~/Dynamic-Risk-Assessment/analysis/unsolvable_tasks.txt"
         with open(task_mask, 'r') as f:
             task_mask_list = [line.strip() for line in f.readlines()]
         with open(unsolvable_task_mask, 'r') as f:

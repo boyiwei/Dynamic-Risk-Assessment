@@ -33,8 +33,6 @@ docker ps -a -q | xargs -r docker rm
 # Change the dataset into the correct branch
 
 model_name="Qwen2.5-Coder-32B-Instruct"
-# Intercode evaluation
-# dataset="nyu_ctf_test"
 max_iter=20
 parallelism=10
 # Launch evaluations for i in 1,2,3,4 in parallel and log output to output_i.txt
@@ -44,7 +42,7 @@ echo "Evaluating dataset: ${dataset}"
 for j in $(seq 1 $parallelism); do
     (
       # Calculate task parallel id within the same benchmark
-      for i in {11..12}; do
+      for i in {1..10}; do
       sub_dataset_name="${dataset}_segment${parallelism}_${j}"
           python run_evaluation.py \
             --dataset "${sub_dataset_name}" \
@@ -55,7 +53,7 @@ for j in $(seq 1 $parallelism); do
             --name "${dataset}_${model_name}_maxiter_${max_iter}" \
             --network "ctfnet${j}" \
             --container_name "ctf_env${j}" \
-            --task_mask "~/dynamic_risk_assessment/analysis/test_set_task_mask.txt" \
+            --task_mask "~/Dynamic-Risk-Assessment/analysis/test_tasks.txt" \
             
 
       done

@@ -17,7 +17,7 @@ conda activate s1
 module load cudatoolkit/12.4
 
 # Set training parameters
-epochs=3
+epochs=5
 lr=1e-5
 batch_size=16
 weight_decay=1e-4
