@@ -5,8 +5,8 @@ import os
 import pickle
 from collections import namedtuple
 from concurrent.futures import ThreadPoolExecutor
-from dotenv import load_dotenv
-
+# from dotenv import load_dotenv
+import re
 import backoff
 import numpy as np
 import openai
@@ -17,7 +17,7 @@ from ctf_prompt import get_init_archive, get_prompt, get_reflexion_prompt
 client = openai.OpenAI(api_key="token-abc123", base_url=f"http://localhost:6790/v1")
 
 from utils import random_id, format_arc_data, eval_solution, list_to_string, bootstrap_confidence_interval
-load_dotenv(dotenv_path='.env')
+# load_dotenv(dotenv_path='.env')
 Info = namedtuple('Info', ['name', 'author', 'content', 'iteration_idx'])
 
 FORMAT_INST = lambda request_keys: f"""# Output Format:\nReply EXACTLY with the following JSON format.\n{str(request_keys)}\nDO NOT MISS ANY REQUEST FIELDS and ensure that your response is a WELL-FORMED JSON object!\n"""
@@ -63,94 +63,21 @@ def get_json_response_from_gpt_reflect(
         temperature=temperature, max_tokens=12000
     )
     content = response.choices[0].message.content
+    
+        # json_dict = json.loads(content)
+    raw_reply = content.strip()
+        # Strip the ```json … ``` wrapper (if present)
+    if raw_reply.startswith("```"):
+        raw_reply = re.sub(r"^```[\w]*\n", "", raw_reply)   # remove opening fence
+        raw_reply = raw_reply.rsplit("```", 1)[0].strip()   # remove closing fence
     try:
-        json_dict = json.loads(content)
+        # Parse into a native dict
+        json_dict = json.loads(raw_reply)
     except json.JSONDecodeError:
         import ast
-        json_dict = ast.literal_eval(content)
+        json_dict = ast.literal_eval(raw_reply)
     assert not json_dict is None
     return json_dict
-
-
-class AgentSystem():
-    def __init__(self, examples, test_iuput) -> None:
-        self.examples = examples
-        self.test_iuput = test_iuput
-
-    def run_examples_and_get_feedback(self, code):
-        examples = self.examples
-
-        correct_examples = []
-        wrong_examples = []
-
-        if isinstance(code, Info):
-            author = code.author
-            code = code.content
-        else:
-            author = None
-
-        gen_output = lambda msg: Info('feedback', f"{author}'s code evaluator" if author else "code evaluator", msg, -1)
-
-        local_vars = {}
-        try:
-            exec(code, {}, local_vars)
-        except Exception as e:
-            return gen_output(f"Error during code execution: {e}"), correct_examples, wrong_examples
-        if 'transform' not in local_vars:
-            return gen_output("Function 'transform' not found in the code."), correct_examples, wrong_examples
-
-        transform = local_vars['transform']
-
-        feedback = ""
-
-        for idx, example in enumerate(examples):
-            input_grid = example['input']
-            output_grid = example['output']
-            try:
-                transformed_grid = transform(input_grid)
-            except Exception as e:
-                return gen_output(f"Error during function execution: {e}"), correct_examples, wrong_examples
-
-            if transformed_grid == output_grid:
-                feedback += f"Your transform function generates a CORRECT answer in Example {idx}!\n\n"
-                correct_examples.append(example)
-            else:
-                try:
-                    transformed_grid = list_to_string(transformed_grid)
-                except:
-                    pass
-                feedback += f"Your transform function generates a WRONG answer in Example {idx}!\nExpect: See above Example {idx} output.\nYou got: {transformed_grid}\nObserve the Example {idx} carefully!\n\n"
-                wrong_examples.append(example)
-
-        return gen_output(feedback), correct_examples, wrong_examples
-
-    def get_test_output_from_code(self, code):
-        test_input = self.test_iuput
-
-        if isinstance(code, Info):
-            author = code.author
-            code = code.content
-        else:
-            author = None
-
-        gen_output = lambda msg: Info('answer', f"{author}'s code evaluator" if author else "code evaluator", msg, -1)
-
-        local_vars = {}
-        try:
-            exec(code, {}, local_vars)
-        except Exception as e:
-            return gen_output(f"Error during code execution: {e}")
-        if 'transform' not in local_vars:
-            return gen_output("Function 'transform' not found in the code.")
-
-        transform = local_vars['transform']
-        try:
-            transform_output = transform(test_input)
-            transform_output = list_to_string(transform_output)
-        except Exception as e:
-            return gen_output(f"Error during function execution: {e}")
-
-        return gen_output(transform_output)
 
 
 def search(args):
@@ -171,7 +98,7 @@ def search(args):
             continue
 
         solution['generation'] = "initial"
-        fitness_str = "95% Bootstrap Confidence Interval: (53.0%, 60.0%), Median: 55.1%"
+        fitness_str = "Median: 63.3%"
         solution['fitness'] = fitness_str
 
         # save results
@@ -186,22 +113,29 @@ def search(args):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt},
         ]
-        try:
-            next_solution = get_json_response_from_gpt_reflect(msg_list, args.model)
+        for _ in range(20):
+            try:
+                next_solution = get_json_response_from_gpt_reflect(msg_list, args.model)
 
-            Reflexion_prompt_1, Reflexion_prompt_2 = get_reflexion_prompt(archive[-1] if n > 0 else None)
-            # Reflexion 1
-            msg_list.append({"role": "assistant", "content": str(next_solution)})
-            msg_list.append({"role": "user", "content": Reflexion_prompt_1})
-            next_solution = get_json_response_from_gpt_reflect(msg_list, args.model)
-            # Reflexion 2
-            msg_list.append({"role": "assistant", "content": str(next_solution)})
-            msg_list.append({"role": "user", "content": Reflexion_prompt_2})
-            next_solution = get_json_response_from_gpt_reflect(msg_list, args.model)
-        except Exception as e:
-            print("During LLM generate new solution:")
-            print(e)
-            continue
+                Reflexion_prompt_1, Reflexion_prompt_2 = get_reflexion_prompt(archive[-1] if n > 0 else None)
+                # Reflexion 1
+                msg_list.append({"role": "assistant", "content": str(next_solution)})
+                msg_list.append({"role": "user", "content": Reflexion_prompt_1})
+                next_solution = get_json_response_from_gpt_reflect(msg_list, args.model)
+                # Reflexion 2
+                msg_list.append({"role": "assistant", "content": str(next_solution)})
+                msg_list.append({"role": "user", "content": Reflexion_prompt_2})
+                next_solution = get_json_response_from_gpt_reflect(msg_list, args.model)
+                code = next_solution['code']
+                if re.search(r"def (?!run_conversation_step\()", code):
+                    print("Extra function definitions are not allowed. Resampling")
+                    continue
+                else:
+                    break
+            except Exception as e:
+                print("During LLM generate new solution:")
+                print(e)
+                continue
         # for _ in range(args.debug_max):
         #     try:
         #         acc_list = evaluate_forward_fn(args, next_solution["code"])
@@ -232,7 +166,7 @@ def search(args):
         # if 'reflection' in next_solution:
         #     del next_solution['reflection']
         archive.append(next_solution)
-
+        print(next_solution['code'])
         # save results
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'w') as json_file:
@@ -247,9 +181,9 @@ if __name__ == "__main__":
     parser.add_argument('--multiprocessing', action='store_true', default=True)
     parser.add_argument('--max_workers', type=int, default=32)
     parser.add_argument('--debug', action='store_true', default=True)
-    parser.add_argument('--save_dir', type=str, default='ADAS/')
+    parser.add_argument('--save_dir', type=str, default='iter_workflow_refinement/')
     parser.add_argument('--expr_name', type=str, default='ctf_results')
-    parser.add_argument('--n_generation', type=int, default=1)
+    parser.add_argument('--n_generation', type=int, default=20)
     parser.add_argument('--reflect_max', type=int, default=3)
     parser.add_argument('--debug_max', type=int, default=3)
     parser.add_argument('--model',
