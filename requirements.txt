@@ -1,0 +1,14 @@
+openai
+anthropic==0.25.7
+rich
+ruamel.yaml
+bs4
+ToolDefGenerator @ git+https://github.com/moyix/ToolDefGenerator@main
+jinja2
+docker
+lxml
+tabulate
+backoff
+pyte
+tiktoken
+nyuctf

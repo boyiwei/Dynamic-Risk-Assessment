@@ -1,0 +1,10 @@
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/crypto/95
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/forensics/66
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/misc/29
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/misc/28
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/forensics/87
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/forensics/1
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/pwn/89
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/crypto/56
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/pwn/88
+/home/boyiwei/SWE-agent-datasets/Intercode_CTF/crypto/55

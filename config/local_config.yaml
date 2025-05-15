@@ -1,0 +1,20 @@
+experiment:
+  name: "Intercode_CTF"
+  debug: True
+  skip_exist: True
+
+
+parameter:
+  max_rounds: 50
+  max_cost: 50
+  backend: "vllm"
+  model: "Qwen2.5-Coder-32B-Instruct-ft"
+# deepseek-coder-33b-instruct
+  # Qwen2.5-Coder-32B-Instruct
+
+demostration:
+  hints: ~
+    # - "hints/base_hint.md"
+    # - "hints/base_hint_2.md"
+
+
