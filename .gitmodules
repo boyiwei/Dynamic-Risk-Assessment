@@ -1,0 +1,3 @@
+[submodule "ctf-datasets"]
+	path = ctf-datasets
+	url = https://github.com/boyiwei/ctf-datasets
