@@ -5,6 +5,14 @@ This repository contains the code for the paper "Dynamic Risk Assessment for Off
 
 ## Installation
 
+
+Use the following command to clone the repo and the dataset:
+
+```bash 
+git clone --recurse-submodules git@github.com:boyiwei/Dynamic-Risk-Assessment.git
+```
+
+
 Simply run the following command to install the dependencies:
 ```bash
 pip install -r requirements.txt
@@ -17,21 +25,6 @@ pip install -r self_training/requirements.txt
 ```
 
 ## Quick Start
-
-### Dataset Preparation
-
-Use the following command to clone the dataset:
-
-```bash 
-git clone --recurse-submodules git@github.com:boyiwei/ctf-datasets.git
-```
-
-Our code base is based on the hierarchy as follows:
-```
-root/
-├── ctf-datasets/
-├── Dynamic-Risk-Assessment/
-```
 
 ### Initialize Agents
 Run the following command to initialize the agents, which will build the docker image.
@@ -57,7 +50,7 @@ bash scripts/launch_evaluation_base.sh
 Key arguments:
 1. `max_iter`: the max rounds of interactions ($N$ in our paper). We set it to 20 by default.
 2. `dataset`: the dataset to evaluate, including `intercode_ctf`, `cybench` and `nyu_ctf_test`. We set it to `intercode_ctf` by default.
-3. `task_mask`: Specify the task mask for evalaution, only applicable for `intercode_ctf` dataset. We set it to `~/Dynamic-Risk-Assessment/analysis/test_tasks.txt` by default, which means we only evaluate on the test set. If we need to evaluate on the development set, we need to set it to `~/Dynamic-Risk-Assessment/analysis/train_tasks.txt`.
+3. `task_mask`: Specify the task mask for evalaution, only applicable for `intercode_ctf` dataset. We set it to `analysis/test_tasks.txt` by default, which means we only evaluate on the test set. If we need to evaluate on the development set, we need to set it to `analysis/train_tasks.txt`.
 3. `model_name`: the name of the model to evaluate, we set it to `Qwen2.5-Coder-32B-Instruct` by default.
 4. `parallelism`: the number of parallel processes to run. We set it to 10 by default.
 5. `i`: the repetition id. By setting `i` ranging fron 1 to 12, we repeat our experiments for 12 times.

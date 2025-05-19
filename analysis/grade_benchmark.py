@@ -10,14 +10,14 @@ import numpy as np
 
 
 dataset2root = {
-    'nyu_ctf_test': {"root_dir": "~/ctf-datasets/NYU_CTF_Bench/", "json_file": "~/ctf-datasets/NYU_CTF_Bench/test_dataset.json"},
-    'nyu_ctf_train': {"root_dir": "~/ctf-datasets/NYU_CTF_Bench/", "json_file": "~/ctf-datasets/NYU_CTF_Bench/development_dataset.json"},
-    'cybench': {"root_dir": "~/ctf-datasets/cybench/", "json_file": "~/ctf-datasets/cybench/cybench.json"},
-    'intercode_ctf': {"root_dir": "~/ctf-datasets/Intercode_CTF/", "json_file": "~/ctf-datasets/Intercode_CTF/intercode_dataset.json"},
+    'nyu_ctf_test': {"root_dir": "ctf-datasets/NYU_CTF_Bench/", "json_file": "ctf-datasets/NYU_CTF_Bench/test_dataset.json"},
+    'nyu_ctf_train': {"root_dir": "ctf-datasets/NYU_CTF_Bench/", "json_file": "ctf-datasets/NYU_CTF_Bench/development_dataset.json"},
+    'cybench': {"root_dir": "ctf-datasets/cybench/", "json_file": "ctf-datasets/cybench/cybench.json"},
+    'intercode_ctf': {"root_dir": "ctf-datasets/Intercode_CTF/", "json_file": "ctf-datasets/Intercode_CTF/intercode_dataset.json"},
 }
 
 def grade_benchmark(task_name):
-    log_dir = "~/Dynamic-Risk-Assessment/logs/" + task_name
+    log_dir = "logs/" + task_name
     json_files = glob.glob(os.path.join(log_dir, "*.json"))
     task_num = len(json_files)
     acc_count = 0
@@ -53,11 +53,11 @@ def compute_pass_k_bootstrap(args, k):
     with open(task_json_file, "r") as f:
         data = json.load(f)
     if args.train_set:
-        train_set_path = "~/Dynamic-Risk-Assessment/analysis/train_tasks.txt"
+        train_set_path = "analysis/train_tasks.txt"
         with open(train_set_path, "r") as f:
             task_names = [line.strip() for line in f.readlines()]
     elif args.test_set:
-        test_set_path = "~/Dynamic-Risk-Assessment/analysis/test_tasks.txt"
+        test_set_path = "analysis/test_tasks.txt"
         with open(test_set_path, "r") as f:
             task_names = [line.strip() for line in f.readlines()]
     else:
@@ -68,7 +68,7 @@ def compute_pass_k_bootstrap(args, k):
     pass_arrays = None
     for i in range(1, n_rounds + 1):
         pass_array = []
-        log_dir = f"~/Dynamic-Risk-Assessment/logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+        log_dir = f"logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
         # open the log dir and find the corresponding json file
         success_tasks = []
         for task_name in task_names:
@@ -89,11 +89,11 @@ def compute_pass_k_bootstrap(args, k):
                 pass
         # dump successful files in to txt
         if args.train_set:
-            path = f"~/Dynamic-Risk-Assessment/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
+            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
         elif args.test_set:
-            path = f"~/Dynamic-Risk-Assessment/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
+            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
         else:
-            path = f"~/Dynamic-Risk-Assessment/analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
+            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
         with open(path, "w") as f:
             for challenge_name in success_tasks:
                 f.write(challenge_name + '\n')
@@ -136,8 +136,8 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
     with open(task_json_file, "r") as f:
         data = json.load(f)
         
-    train_set_path = "~/Dynamic-Risk-Assessment/analysis/train_tasks.txt"
-    test_set_path = "~/Dynamic-Risk-Assessment/analysis/test_tasks.txt"
+    train_set_path = "analysis/train_tasks.txt"
+    test_set_path = "analysis/test_tasks.txt"
     
     if args.train_set:
         with open(train_set_path, "r") as f:
@@ -157,9 +157,9 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
         unsolved_ids = ["challenge_" + str(i) for i in [95, 66, 29, 28, 87, 1, 89, 56, 88, 55]]
         for j in range(k):    
             if j == 0: # here is the pass@1 for the base model without iterative prompting
-                log_dir = f"~/Dynamic-Risk-Assessment/results{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"results{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
             else:
-                log_dir = f"~/Dynamic-Risk-Assessment/results{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"results{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
             for task_name in task_names:
                 output_file = os.path.join(log_dir, f"{task_name}.json")
                 try:

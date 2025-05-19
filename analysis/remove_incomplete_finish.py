@@ -20,6 +20,6 @@ def remove_imcomplete_finish(file_dir):
 if __name__ == "__main__":
     for i in range(1, 10):
         for task in ["intercode_ctf"]:
-            remove_imcomplete_finish(f'~/Dynamic-Risk-Assessment/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_50_round{i}')    
-    # remove_imcomplete_finish('~/Dynamic-Risk-Assessment/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct-ft_ft_10_lora_maxiter_20_round3/')
+            remove_imcomplete_finish(f'logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_50_round{i}')    
+    # remove_imcomplete_finish('logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct-ft_ft_10_lora_maxiter_20_round3/')
     

@@ -81,7 +81,7 @@ def convert_traj_to_chat(file_list, format, tokenizer):
                 
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
-    args.add_argument('--file_dir', type=str, default='~/Dynamic-Risk-Assessment/analysis/successful_tasks_lists/successful_tasks_intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_train_round4.txt')
+    args.add_argument('--file_dir', type=str, default='analysis/successful_tasks_lists/successful_tasks_intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_train_round4.txt')
     args.add_argument('--format', type=str, default='single-turn')
     tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-Coder-32B-Instruct")
     args = args.parse_args()

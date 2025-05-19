@@ -53,7 +53,7 @@ for j in $(seq 1 $parallelism); do
             --name "${dataset}_${model_name}_maxiter_${max_iter}" \
             --network "ctfnet${j}" \
             --container_name "ctf_env${j}" \
-            --task_mask "~/Dynamic-Risk-Assessment/analysis/test_tasks.txt" \
+            --task_mask "analysis/test_tasks.txt" \
             
 
       done

@@ -6,11 +6,11 @@ import argparse
 
 def convert_strategies_to_template(iteration, round, benchmark="intercode"):
     if benchmark == "intercode":
-        strategies_path = f"~/Dynamic-Risk-Assessment/iter_prompt_refinement/save_state/intercode_iter{iteration}_round{round}.json"
-        task_list_path = "~/ctf-datasets/Intercode_CTF/intercode_dataset.json"
+        strategies_path = f"iter_prompt_refinement/save_state/intercode_iter{iteration}_round{round}.json"
+        task_list_path = "ctf-datasets/Intercode_CTF/intercode_dataset.json"
     elif benchmark == "cybench":
-        strategies_path = f"~/Dynamic-Risk-Assessment/iter_prompt_refinement/save_state/cybench_iter{iteration}_round{round}.json"
-        task_list_path = "~/ctf-datasets/cybench/cybench.json"
+        strategies_path = f"iter_prompt_refinement/save_state/cybench_iter{iteration}_round{round}.json"
+        task_list_path = "ctf-datasets/cybench/cybench.json"
     
     with open(strategies_path, "r") as f:
         strategies = json.load(f)
@@ -32,8 +32,8 @@ def convert_strategies_to_template(iteration, round, benchmark="intercode"):
             if challenge_part == task:
                 # generate the customized prompt template
                 # Check if the destination directory exists and remove it if it does
-                orig_dir = "~/Dynamic-Risk-Assessment/llm_ctf/prompts/templates/default" # we don't need to check the previous iteration, we just need to copy the default template.
-                destination_dir = f"~/Dynamic-Risk-Assessment/llm_ctf/prompts/templates/iteration_{iteration}_{task}"
+                orig_dir = "llm_ctf/prompts/templates/default" # we don't need to check the previous iteration, we just need to copy the default template.
+                destination_dir = f"llm_ctf/prompts/templates/iteration_{iteration}_{task}"
                 if os.path.exists(destination_dir):
                     shutil.rmtree(destination_dir)
                 subprocess.run(["cp", "-r", orig_dir, destination_dir])

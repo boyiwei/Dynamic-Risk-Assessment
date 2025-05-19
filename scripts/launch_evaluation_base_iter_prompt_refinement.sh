@@ -47,16 +47,16 @@ parallelism=10
 
 for rep_round in {1..12}; do
 
-rm -rf ~/Dynamic-Risk-Assessment/llm_ctf/templates/iteration* # remove the previous template
+rm -rf llm_ctf/templates/iteration* # remove the previous template
 
 for iter_prompt_round in {1..20}; do
 
 python analysis/grade_benchmark.py --iter_prompt --n_rounds $rep_round --max_k $iter_prompt_round --test_set
 
 if [ $iter_prompt_round -eq 1 ]; then
-    logs_dir=~/Dynamic-Risk-Assessment/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round${rep_round}
+    logs_dir=logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_20_round${rep_round}
 else
-    logs_dir=~/Dynamic-Risk-Assessment/logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_iterprompt$((iter_prompt_round - 1))_maxiter_20_round${rep_round}
+    logs_dir=logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_iterprompt$((iter_prompt_round - 1))_maxiter_20_round${rep_round}
 fi
 
 
@@ -88,7 +88,7 @@ for j in $(seq 1 $parallelism); do
             --container_name "ctf_env${j}" \
             --iter_prompt_refinement \
             --iter_prompt_round "${iter_prompt_round}" \
-            --task_mask "~/Dynamic-Risk-Assessment/analysis/successful_tasks_lists/successful_tasks_intercode_ctf_test_Qwen2.5-Coder-32B-Instruct_maxiter_20_iter_prompt_refinement${rep_round}.txt"
+            --task_mask "analysis/successful_tasks_lists/successful_tasks_intercode_ctf_test_Qwen2.5-Coder-32B-Instruct_maxiter_20_iter_prompt_refinement${rep_round}.txt"
       done
     )   > "output_${j}.txt" 2>&1 & # Redirect both stdout and stderr to output_i.txt
 done
