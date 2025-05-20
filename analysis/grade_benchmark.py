@@ -162,9 +162,9 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
         unsolved_ids = ["challenge_" + str(i) for i in [95, 66, 29, 28, 87, 1, 89, 56, 88, 55]]
         for j in range(k):    
             if j == 0: # here is the pass@1 for the base model without iterative prompting
-                log_dir = f"results{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
             else:
-                log_dir = f"results{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
             for task_name in task_names:
                 output_file = os.path.join(log_dir, f"{task_name}.json")
                 try:

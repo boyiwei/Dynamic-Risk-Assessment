@@ -51,17 +51,17 @@ def find_folders(directory, test_set, task="intercode"):
     task_names = []
     
     if test_set:
-        test_set_path = "test_tasks.txt"
+        test_set_path = "analysis/test_tasks.txt"
         with open(test_set_path, "r") as f:
-            tasks = [line.strip() for line in f.readlines()]
+            task_names = [line.strip() for line in f.readlines()]
     else:
         with open(task_json_file, "r") as f:
             data = json.load(f)
             tasks = [elem for elem in data]
         
-    for task in tasks:
-        challenge = CTFChallenge(dataset.get(task), dataset.basedir)
-        task_names.append(challenge.canonical_name)
+        for task in tasks:
+            challenge = CTFChallenge(dataset.get(task), dataset.basedir)
+            task_names.append(challenge.canonical_name)
 
     for filename in os.listdir(directory):
         if filename.endswith(".json"):
@@ -158,6 +158,11 @@ if __name__ == "__main__":
 
     
     args = args.parse_args()
+    # Check if the save_state directory exists and create it if not
+    save_state_dir = "iter_prompt_refinement/save_state"
+    if not os.path.exists(save_state_dir):
+        print(f"Creating directory: {save_state_dir}")
+        os.makedirs(save_state_dir)
     json_file = f"iter_prompt_refinement/save_state/{args.task}_iter{args.iteration}_round{args.round}.json"   
     if args.skip_existing:
         if os.path.exists(json_file):

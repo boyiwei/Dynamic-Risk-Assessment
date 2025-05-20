@@ -59,7 +59,7 @@ def main():
 
     # Log directory options
     parser.add_argument("--skip-exist", action="store_true", help="Skip existing logs and experiments")
-    parser.add_argument("-L", "--logdir", default=str(script_dir / "logs" / os.getlogin()), help="log directory to write the log")
+    parser.add_argument("-L", "--logdir", default=str(script_dir / "logs"), help="log directory to write the log")
     parser.add_argument("-n", "--name", help="Experiment name (creates subdir in logdir)")
     parser.add_argument("-i", "--index", help="Round index of the experiment (creates subdir in logdir)")
 
@@ -101,7 +101,7 @@ def main():
         dataset = CTFDataset(split=args.split)
     challenge = CTFChallenge(dataset.get(args.challenge), dataset.basedir)
 
-    logdir = Path(args.logdir).resolve()
+    logdir = Path(args.logdir).expanduser().resolve()
     logsubdir = []
     if args.name:
         logsubdir.append(args.name)
