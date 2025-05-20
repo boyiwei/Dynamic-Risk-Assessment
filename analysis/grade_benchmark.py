@@ -88,6 +88,11 @@ def compute_pass_k_bootstrap(args, k):
                 pass_array.append(0)
                 pass
         # dump successful files in to txt
+        # Check if the directory for successful tasks lists exists, if not create it
+        successful_tasks_dir = "analysis/successful_tasks_lists"
+        if not os.path.exists(successful_tasks_dir):
+            os.makedirs(successful_tasks_dir)
+            print(f"Created directory: {successful_tasks_dir}")
         if args.train_set:
             path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
         elif args.test_set:

@@ -101,7 +101,7 @@ def main():
         dataset = CTFDataset(split=args.split)
     challenge = CTFChallenge(dataset.get(args.challenge), dataset.basedir)
 
-    logdir = Path(args.logdir).expanduser().resolve()
+    logdir = Path(args.logdir).resolve()
     logsubdir = []
     if args.name:
         logsubdir.append(args.name)
