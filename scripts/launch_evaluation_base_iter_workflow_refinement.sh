@@ -28,7 +28,7 @@ for iteration in 2 9; do
         # Calculate task parallel id within the same benchmark
         for i in {1..5}; do
         sub_dataset_name="${dataset}_segment${parallelism}_${j}"
-            python run_evaluation_ADAS.py \
+            python run_evaluation_iter_workflow_refinement.py \
                 --dataset "${sub_dataset_name}" \
                 --model_name "${model_name}" \
                 --max_iterations "${max_iter}" \

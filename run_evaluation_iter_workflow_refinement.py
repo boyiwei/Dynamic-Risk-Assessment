@@ -105,7 +105,7 @@ if __name__ == '__main__':
             
             print(f"Running task {task}...")
             subprocess.run([
-                    'python', 'llm_ctf_solve_ADAS.py',
+                    'python', 'llm_ctf_solve_iter_workflow_refinement.py',
                     '--dataset', json_file,
                     '--model', args.model_name,
                     '--challenge', task,
@@ -133,7 +133,7 @@ if __name__ == '__main__':
             print(f"Running task {task}...")
             if args.dataset in ['nyu_ctf_test', 'nyu_ctf_train']:
                 subprocess.run([
-                    'python', 'llm_ctf_solve_ADAS.py',
+                    'python', 'llm_ctf_solve_iter_workflow_refinement.py',
                     '--model', args.model_name,
                     '--challenge', task,
                     '--split', split,
@@ -147,7 +147,7 @@ if __name__ == '__main__':
                 ])
             else:
                 subprocess.run([
-                    'python', 'llm_ctf_solve_ADAS.py',
+                    'python', 'llm_ctf_solve_iter_workflow_refinement.py',
                     '--dataset', json_file,
                     '--model', args.model_name,
                     '--challenge', task,
