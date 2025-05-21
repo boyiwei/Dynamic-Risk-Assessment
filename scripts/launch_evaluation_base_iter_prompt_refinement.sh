@@ -41,33 +41,33 @@ done
 model_name="Qwen2.5-Coder-32B-Instruct"
 # Intercode evaluation
 # dataset="nyu_ctf_test"
-max_iter=20
+N=20
 parallelism=10
 
 
-for rep_round in 1; do
+for k0 in 1; do
 
 rm -rf llm_ctf/templates/iteration* # remove the previous template
 
 for iter_prompt_round in {1..20}; do
 
-python analysis/grade_benchmark.py --iter_prompt --n_rounds $rep_round --max_k $iter_prompt_round --test_set --max_iter $max_iter
+python analysis/grade_benchmark.py --iter_prompt --k0 $k0 --max_k $iter_prompt_round --test_set --N $N
 
 if [ $iter_prompt_round -eq 1 ]; then
-    logs_dir=logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_${max_iter}_round${rep_round}
+    logs_dir=logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_maxiter_${N}_round${k0}
 else
-    logs_dir=logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_iterprompt$((iter_prompt_round - 1))_maxiter_${max_iter}_round${rep_round}
+    logs_dir=logs/intercode_ctf_Qwen2.5-Coder-32B-Instruct_iterprompt$((iter_prompt_round - 1))_maxiter_${N}_round${k0}
 fi
 
 
 echo "Starting prompt refinement iteration $iter_prompt_round"
 
-python iter_prompt_refinement/generate_prompt_refinement.py  --iteration $iter_prompt_round --logs_dir $logs_dir --round ${rep_round} --skip_existing --test_set
+python iter_prompt_refinement/generate_prompt_refinement.py  --iteration $iter_prompt_round --logs_dir $logs_dir --round ${k0} --skip_existing --test_set
 
 echo "Convert the refined prompt to the correct format"
 
 
-python iter_prompt_refinement/add_prompt_to_template.py --iteration $iter_prompt_round --round ${rep_round}
+python iter_prompt_refinement/add_prompt_to_template.py --iteration $iter_prompt_round --round ${k0}
 
 # Launch evaluations for i in 1,2,3,4 in parallel and log output to output_i.txt
 for dataset in "intercode_ctf" ; do
@@ -75,20 +75,20 @@ echo "Evaluating dataset: ${dataset}"
 for j in $(seq 1 $parallelism); do
     (
       # Calculate task parallel id within the same benchmark
-      for i in $rep_round; do
+      for i in $k0; do
       sub_dataset_name="${dataset}_segment${parallelism}_${j}"
           python run_evaluation.py \
             --dataset "${sub_dataset_name}" \
             --model_name "${model_name}" \
-            --max_iterations "${max_iter}" \
+            --N "${N}" \
             --config config/local_config.yaml \
             --round "${i}" \
-            --name "${dataset}_${model_name}_iterprompt${iter_prompt_round}_maxiter_${max_iter}" \
+            --name "${dataset}_${model_name}_iterprompt${iter_prompt_round}_maxiter_${N}" \
             --network "ctfnet${j}" \
             --container_name "ctf_env${j}" \
             --iter_prompt_refinement \
             --iter_prompt_round "${iter_prompt_round}" \
-            --task_mask "analysis/successful_tasks_lists/successful_tasks_intercode_ctf_test_Qwen2.5-Coder-32B-Instruct_maxiter_${max_iter}_iter_prompt_refinement${rep_round}.txt"
+            --task_mask "analysis/successful_tasks_lists/successful_tasks_intercode_ctf_test_Qwen2.5-Coder-32B-Instruct_maxiter_${N}_iter_prompt_refinement${k0}.txt"
       done
     )   > "output_${j}.txt" 2>&1 & # Redirect both stdout and stderr to output_i.txt
 done

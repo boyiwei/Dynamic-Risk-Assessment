@@ -5,7 +5,7 @@ trap "echo 'Terminating all subprocesses...'; kill 0" SIGINT
 
 parallelism=10
 model_name="Qwen2.5-Coder-32B-Instruct"
-max_iter=20
+N=20
 dataset="intercode_ctf"
 
 for i in {1..10}; do
@@ -31,14 +31,13 @@ for iteration in 2 9; do
             python run_evaluation_iter_workflow_refinement.py \
                 --dataset "${sub_dataset_name}" \
                 --model_name "${model_name}" \
-                --max_iterations "${max_iter}" \
+                --N "${N}" \
                 --config config/local_config.yaml \
                 --round "${i}" \
-                --name "${dataset}_${model_name}_adas${iteration}_maxiter_${max_iter}" \
+                --name "${dataset}_${model_name}_adas${iteration}_maxiter_${N}" \
                 --network "ctfnet${j}" \
                 --container_name "ctf_env${j}" \
                 --adas-iter-round "${iteration}" \
-                # --task_mask "/home/boyiwei/NYU-Agents-ADAS/analysis/test_set_task_mask.txt"
         done
         )   > "output_${j}.txt" 2>&1 & # Redirect both stdout and stderr to output_i.txt
     done

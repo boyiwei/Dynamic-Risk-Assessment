@@ -33,10 +33,10 @@ docker ps -a -q | xargs -r docker rm
 # Change the dataset into the correct branch
 
 model_name="Qwen2.5-Coder-32B-Instruct"
-max_iter=20
+N=20
 parallelism=10
 # Launch evaluations for i in 1,2,3,4 in parallel and log output to output_i.txt
-for max_iter in 10; do
+for N in 10; do
 for dataset in "intercode_ctf" ; do
 echo "Evaluating dataset: ${dataset}"
 for j in $(seq 1 $parallelism); do
@@ -47,10 +47,10 @@ for j in $(seq 1 $parallelism); do
           python run_evaluation.py \
             --dataset "${sub_dataset_name}" \
             --model_name "${model_name}" \
-            --max_iterations "${max_iter}" \
+            --N "${N}" \
             --config config/local_config.yaml \
             --round "${i}" \
-            --name "${dataset}_${model_name}_maxiter_${max_iter}" \
+            --name "${dataset}_${model_name}_maxiter_${N}" \
             --network "ctfnet${j}" \
             --container_name "ctf_env${j}" \
             --task_mask "analysis/test_tasks.txt" \

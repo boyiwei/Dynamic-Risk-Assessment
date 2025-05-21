@@ -46,8 +46,8 @@ def pass_at_k(n, c, k):
 def compute_pass_k_bootstrap(args, k):
     benchmark_name = args.task_name
     model_name = args.model_name
-    max_iterations = args.max_iterations
-    n_rounds = args.n_rounds
+    N = args.N
+    k0 = args.k0
     task_json_file = dataset2root[benchmark_name]['json_file']
     
     with open(task_json_file, "r") as f:
@@ -66,9 +66,9 @@ def compute_pass_k_bootstrap(args, k):
     for task in task_names:
         tasks_solved_count[task] = 0
     pass_arrays = None
-    for i in range(1, n_rounds + 1):
+    for i in range(1, k0 + 1):
         pass_array = []
-        log_dir = f"logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+        log_dir = f"logs/{benchmark_name}_{model_name}_maxiter_{N}_round{i}"
         # open the log dir and find the corresponding json file
         success_tasks = []
         for task_name in task_names:
@@ -94,11 +94,11 @@ def compute_pass_k_bootstrap(args, k):
             os.makedirs(successful_tasks_dir)
             print(f"Created directory: {successful_tasks_dir}")
         if args.train_set:
-            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_train_round{i}.txt"
+            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{N}_train_round{i}.txt"
         elif args.test_set:
-            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_test_round{i}.txt"
+            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{N}_test_round{i}.txt"
         else:
-            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}.txt"
+            path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{N}_round{i}.txt"
         with open(path, "w") as f:
             for challenge_name in success_tasks:
                 f.write(challenge_name + '\n')
@@ -134,8 +134,8 @@ def compute_pass_k_bootstrap(args, k):
 def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
     benchmark_name = args.task_name
     model_name = args.model_name
-    max_iterations = args.max_iterations
-    n_rounds = args.n_rounds
+    N = args.N
+    k0 = args.k0
     task_json_file = dataset2root[benchmark_name]['json_file']
     
     with open(task_json_file, "r") as f:
@@ -154,7 +154,7 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
     print(f"Number of tasks being evaluated: {num_tasks}")
     
     pass_arrays = None
-    for i in range(1, n_rounds + 1):
+    for i in range(1, k0 + 1):
         tasks_solved_count = {}
         
         for task in task_names:
@@ -162,9 +162,9 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
         unsolved_ids = ["challenge_" + str(i) for i in [95, 66, 29, 28, 87, 1, 89, 56, 88, 55]]
         for j in range(k):    
             if j == 0: # here is the pass@1 for the base model without iterative prompting
-                log_dir = f"logs/{benchmark_name}_{model_name}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"logs/{benchmark_name}_{model_name}_maxiter_{N}_round{i}"
             else:
-                log_dir = f"logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{max_iterations}_round{i}"
+                log_dir = f"logs/{benchmark_name}_{model_name}_iterprompt{j}_maxiter_{N}_round{i}"
             for task_name in task_names:
                 output_file = os.path.join(log_dir, f"{task_name}.json")
                 try:
@@ -189,20 +189,20 @@ def compute_pass_k_iter_prompt_intercode_bootstrap(args, k):
                     success_task_list.append(key)
 
             if args.train_set:
-                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_train_{model_name}_maxiter_{N}_iter_prompt_refinement{i}.txt"
                 with open(test_set_path, "r") as f:
                     test_tasks = [line.strip() for line in f.readlines()] 
                 for task in test_tasks:
                     success_task_list.append(task)
 
             elif args.test_set:
-                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_test_{model_name}_maxiter_{N}_iter_prompt_refinement{i}.txt"
                 with open(train_set_path, "r") as f:
                     train_tasks = [line.strip() for line in f.readlines()] # skip train tasks when doing iter refinement on test set
                 for task in train_tasks:
                     success_task_list.append(task)
             else:
-                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{max_iterations}_iter_prompt_refinement{i}.txt"
+                path = f"analysis/successful_tasks_lists/successful_tasks_{benchmark_name}_{model_name}_maxiter_{N}_iter_prompt_refinement{i}.txt"
             
             
             with open(path, "w") as f:
@@ -246,13 +246,14 @@ if __name__ == '__main__':
     args = argparse.ArgumentParser()
     args.add_argument("--task_name", type=str, default="intercode_ctf")
     args.add_argument("--model_name", type=str, default="Qwen2.5-Coder-32B-Instruct")
-    args.add_argument("--max_iterations", type=int, default=20)
+    args.add_argument("--N", type=int, default=20)
     args.add_argument("--iter_prompt", action="store_true")
-    args.add_argument("--n_rounds", type=int, default=10)
+    args.add_argument("--k0", type=int, default=10)
     args.add_argument("--max_k", type=int, default=1)
     args.add_argument("--output_file", type=str, default="acc_repeated_sampling.csv")
     args.add_argument("--train_set", action="store_true") # only eval on train set
     args.add_argument("--test_set", action="store_true") # Only eval on test set
+    args.add_argument("--dump_to_adas", action="store_true") # dump the results to adas workflow archive
     args = args.parse_args()
     # task_num, acc_count, accuracy, success_tasks = grade_benchmark(args.task_name)
     if args.train_set or args.test_set:
@@ -262,7 +263,7 @@ if __name__ == '__main__':
         output_file = "iter_prompt_refinement.csv"
         
         for k in range(1, args.max_k + 1):
-            if args.task_name == "intercode_ctf":# in iterative prmpting, for flexibility, we don't connect the k with the number of rounds, here n_rounds refer to how many repetitions we have done for the same experiments
+            if args.task_name == "intercode_ctf":
                 pass_at_k_score, upper_bound, lower_bound = compute_pass_k_iter_prompt_intercode_bootstrap(args, k)
             else:
                 raise NotImplementedError(f"Iterative prompting only supports intercode_ctf, but got {args.task_name}")
@@ -275,13 +276,13 @@ if __name__ == '__main__':
                 task_name = args.task_name
             if os.path.exists(args.output_file):
                 with open(args.output_file, "a") as f:
-                    f.write(f"{task_name},{args.model_name},{args.max_iterations},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
+                    f.write(f"{task_name},{args.model_name},{args.N},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
             else:
                 with open(args.output_file, "w") as f:
-                    f.write(f"task_name,model_name,max_iterations,k,pass_at_k,upper_bound,lower_bound\n")
-                    f.write(f"{task_name},{args.model_name},{args.max_iterations},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
+                    f.write(f"task_name,model_name,N,k,pass_at_k,upper_bound,lower_bound\n")
+                    f.write(f"{task_name},{args.model_name},{args.N},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
     else:
-        for k in range(1, args.n_rounds + 1): 
+        for k in range(1, args.k0 + 1): 
             pass_at_k_score, upper_bound, lower_bound = compute_pass_k_bootstrap(args, k)
             if args.train_set:
                 task_name = args.task_name + "_train"
@@ -291,17 +292,20 @@ if __name__ == '__main__':
                 task_name = args.task_name
             if os.path.exists(args.output_file):
                 with open(args.output_file, "a") as f:
-                    f.write(f"{task_name},{args.model_name},{args.max_iterations},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
+                    f.write(f"{task_name},{args.model_name},{args.N},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
             else:
                 with open(args.output_file, "w") as f:
-                    f.write(f"task_name,model_name,max_iterations,k,pass_at_k,upper_bound,lower_bound\n")
-                    f.write(f"{task_name},{args.model_name},{args.max_iterations},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
-            
-    # # dump the sucess tasks list
-    # with open(f"successful_tasks_{args.task_name}.txt", "w") as f:
-    #     for challenge_name in success_tasks:
-    #         f.write(challenge_name + '\n')
-    
-    
-    # print(f"Total: {task_num}, Correct: {acc_count}, Accuracy: {accuracy}")
+                    f.write(f"task_name,model_name,N,k,pass_at_k,upper_bound,lower_bound\n")
+                    f.write(f"{task_name},{args.model_name},{args.N},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
+    if args.dump_to_adas:
+        # dump the results to adas
+        filepath = "iter_workflow_refinement/ctf_results_run_archive.json"
+        # First read the existing data
+        with open(filepath, "r") as f:
+            adas_info = json.load(f)
+        # Modify the data
+        adas_info[-1]['fitness'] = f"Median: {pass_at_k_score * 100:.2f}%"
+        # Write the updated data back to the file
+        with open(filepath, "w") as f:
+            json.dump(adas_info, f, indent=4)
     

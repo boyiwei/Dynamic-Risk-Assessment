@@ -43,7 +43,7 @@ lr=1e-5
 ft_dataset="ctf_intercode_nyuagent_singleturn_train"
 
 ft_paradigm="fullparam"
-max_iter=20
+N=20
 
 parallelism=10
 # Launch evaluations for i in 1,2,3,4 in parallel and log output to output_i.txt
@@ -57,10 +57,10 @@ for j in $(seq 1 $parallelism); do
           python run_evaluation.py \
             --dataset "${sub_dataset_name}" \
             --model_name "${model_name}" \
-            --max_iterations "${max_iter}" \
+            --N "${N}" \
             --config config/local_config.yaml \
             --round "${i}" \
-            --name "${dataset}_${model_name}_ft_${ft_dataset}_${ft_epoch}_lr_${lr}_${ft_paradigm}_maxiter_${max_iter}" \
+            --name "${dataset}_${model_name}_ft_${ft_dataset}_${ft_epoch}_lr_${lr}_${ft_paradigm}_maxiter_${N}" \
             --network "ctfnet${j}" \
             --container_name "ctf_env${j}"
       done

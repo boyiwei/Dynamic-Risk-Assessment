@@ -48,7 +48,7 @@ We provide a script for running repeated sampling and increasing max rounds of i
 bash scripts/launch_evaluation_base.sh
 ```
 Key arguments:
-1. `max_iter`: the max rounds of interactions ($N$ in our paper). We set it to 20 by default.
+1. `N`: the max rounds of interactions ($N$ in our paper). We set it to 20 by default.
 2. `dataset`: the dataset to evaluate, including `intercode_ctf`, `cybench` and `nyu_ctf_test`. We set it to `intercode_ctf` by default.
 3. `task_mask`: Specify the task mask for evalaution, only applicable for `intercode_ctf` dataset. We set it to `analysis/test_tasks.txt` by default, which means we only evaluate on the test set. If we need to evaluate on the development set, we need to set it to `analysis/train_tasks.txt`.
 3. `model_name`: the name of the model to evaluate, we set it to `Qwen2.5-Coder-32B-Instruct` by default.
@@ -58,7 +58,7 @@ Key arguments:
 
 After running the script, we will have the raw log files in `logs/` directory. By running 
 ```bash
-python analysis/grade_benchmark.py --task_name $benchmark --max_iterations $max_iter --output_file "acc_repeated_sampling.csv" --n_rounds 12
+python analysis/grade_benchmark.py --task_name $benchmark --N $N --output_file "acc_repeated_sampling.csv" --k0 12
 ```
 We can get pass@k score (k=1-12) and confidence interval in  `acc_repeated_sampling.csv` file.
 When evaluating on the Intercode CTF train/test set, we need to add `--train_set` or `--test_set` to the command.
@@ -72,14 +72,14 @@ bash scripts/launch_evaluation_iter_prompt_refinement.sh
 ```
 
 Key arguments:
-1. `rep_round`: the number of rollouts. We set it to 12 by default.
+1. `k0`: the number of rollouts. We set it to 12 by default.
 2. `iter_prompt_round`: the number of iterative prompt refinement rounds. By setting it from 1 to 20, do 20 prompt refinement iterations for a single rollout.
 
 Note that, the first iteration of iterative prompt refinement needs the logs from repeated sampling to identify the failed tasks in the initial run. Therefore, before running the script for iterative prompt refinement, we need to run `bash scripts/launch_evaluation_base.sh` first.
 
 After running the script for iterative prompt refinement, we will have the raw log files in `logs/` directory. By running 
 ```bash
-python analysis/grade_benchmark.py --iter_prompt --n_rounds $rep_round --test_set --output_file "iter_prompt_refinement.csv"
+python analysis/grade_benchmark.py --iter_prompt --k0 $k0 --test_set --output_file "iter_prompt_refinement.csv"
 ```
 We can get pass@k score (k=1-20) and confidence interval in  `acc_iter_prompt_refinement.csv` file. The key difference here is we need to add `--iter_prompt` to the command.
 
@@ -108,12 +108,12 @@ bash scripts/launch_evaluation_ft.sh
 Key arguments:
 1. `model_name`: the name of the model to evaluate. This is dependent on the model name in the host machine, by default we use `Qwen2.5-Coder-32B-Instruct-ft` for self-trained model.
 2. `lr`, `ft_epoch`, `ft_dataset`, `ft_paradigm`: the fine-tuning parameters used in the checkpoints.
-2. `max_iter`: the max rounds of interactions. We set it to 20 by default.
+2. `N`: the max rounds of interactions. We set it to 20 by default.
 3. `dataset`: the dataset to evaluate. We set it to `intercode_ctf` by default.
 
 Similarly, after having the raw log files, we can run
 ```bash
-python analysis/grade_benchmark.py --task_name $benchmark --max_iterations $max_iter --model_name Qwen2.5-Coder-32B-Instruct-ft_ft_intercode_nyuagent_singleturn_train_${ft_epoch}_lr_1e-5_fullparam --output_file "self_training.csv" --test_set --n_rounds 12
+python analysis/grade_benchmark.py --task_name $benchmark --N $N --model_name Qwen2.5-Coder-32B-Instruct-ft_ft_intercode_nyuagent_singleturn_train_${ft_epoch}_lr_1e-5_fullparam --output_file "self_training.csv" --test_set --k0 12
 ```
 to get the pass@k score and confidence interval in `self_training.csv` file. Here `ft_epoch` is the number of epochs used in the self-training.
 
@@ -132,7 +132,7 @@ After having the collection of refined workflows, we can run the following comma
 ```bash
 bash launch_evaluation_base_iter_workflow_refinement.sh
 
-python grade_benchmark.py --model_name "Qwen2.5-Coder-32B-Instruct_adas${iteration}" --task_name $benchmark --max_iterations $max_iter --output_file "acc_repeated_sampling_newnew.csv" --test_set --n_rounds 5
+python grade_benchmark.py --model_name "Qwen2.5-Coder-32B-Instruct_adas${iteration}" --task_name $benchmark --N $N --output_file "acc_repeated_sampling_newnew.csv" --test_set --k0 5
 ```
 
 Key arguments:

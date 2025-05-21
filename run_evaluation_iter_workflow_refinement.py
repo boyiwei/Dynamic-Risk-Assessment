@@ -66,7 +66,7 @@ if __name__ == '__main__':
     args = argparse.ArgumentParser()
     args.add_argument('--dataset', type=str, default='nyu_ctf_test')
     args.add_argument('--model_name', type=str, default='gpt-4o-2024-05-13')
-    args.add_argument('--max_iterations', type=int, default=10)
+    args.add_argument('--N', type=int, default=10)
     args.add_argument('--config', type=str, default='config/local_config.yaml')
     args.add_argument('--name', type=str, default=None)
     args.add_argument('--round', type=int, default=None)
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                     '--name', args.name,
                     '-c', args.config,
                     '-i', f"{args.round}",
-                    '-m', f"{args.max_iterations}",
+                    '-m', f"{args.N}",
                     '--container-name', args.container_name,
                     '--network', args.network,
                     '--prompt-set', prompt_set,
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                     '--name', args.name,
                     '-c', args.config,
                     '-i', f"{args.round}",
-                    '-m', f"{args.max_iterations}",
+                    '-m', f"{args.N}",
                     '--container-name', args.container_name,
                     '--network', args.network,
                     '--adas-iter-round', f"{args.adas_iter_round}",
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                     '--name', args.name,
                     '-c', args.config,
                     '-i', f"{args.round}",
-                    '-m', f"{args.max_iterations}",
+                    '-m', f"{args.N}",
                     '--container-name', args.container_name,
                     '--network', args.network,
                     '--adas-iter-round', f"{args.adas_iter_round}",
