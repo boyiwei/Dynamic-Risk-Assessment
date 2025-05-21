@@ -24,7 +24,7 @@ for iteration in {1..20}; do
     for j in $(seq 1 $parallelism); do
         (
         # Calculate task parallel id within the same benchmark
-        for i in 1; do
+        for i in {1..5}; do
         sub_dataset_name="${dataset}_segment${parallelism}_${j}"
             python run_evaluation_iter_workflow_refinement.py \
                 --dataset "${sub_dataset_name}" \
@@ -43,6 +43,6 @@ for iteration in {1..20}; do
     echo "All evaluations completed."
 
     # grade benchmark
-    python analysis/grade_benchmark.py --model_name "${model_name}_adas${iteration}" --k0 1 --dump_to_adas --train_set
+    python analysis/grade_benchmark.py --model_name "${model_name}_adas${iteration}" --k0 5 --dump_to_adas --train_set
 done
     
