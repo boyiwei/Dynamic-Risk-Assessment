@@ -249,7 +249,7 @@ if __name__ == '__main__':
     args.add_argument("--N", type=int, default=20)
     args.add_argument("--iter_prompt", action="store_true")
     args.add_argument("--k0", type=int, default=10)
-    args.add_argument("--max_k", type=int, default=1)
+    args.add_argument("--max_k", type=int, default=10)
     args.add_argument("--output_file", type=str, default="acc_repeated_sampling.csv")
     args.add_argument("--train_set", action="store_true") # only eval on train set
     args.add_argument("--test_set", action="store_true") # Only eval on test set
@@ -282,8 +282,10 @@ if __name__ == '__main__':
                     f.write(f"task_name,model_name,N,k,pass_at_k,upper_bound,lower_bound\n")
                     f.write(f"{task_name},{args.model_name},{args.N},{k},{pass_at_k_score},{upper_bound},{lower_bound}\n")
     else:
-        for k in range(1, args.k0 + 1): 
+        for k in range(1, args.max_k + 1): 
             pass_at_k_score, upper_bound, lower_bound = compute_pass_k_bootstrap(args, k)
+            if k == 1:
+                pass_at_1_score = pass_at_k_score
             if args.train_set:
                 task_name = args.task_name + "_train"
             elif args.test_set:
@@ -304,7 +306,7 @@ if __name__ == '__main__':
         with open(filepath, "r") as f:
             adas_info = json.load(f)
         # Modify the data
-        adas_info[-1]['fitness'] = f"Median: {pass_at_k_score * 100:.2f}%"
+        adas_info[-1]['fitness'] = f"Median: {pass_at_1_score * 100:.2f}%"
         # Write the updated data back to the file
         with open(filepath, "w") as f:
             json.dump(adas_info, f, indent=4)

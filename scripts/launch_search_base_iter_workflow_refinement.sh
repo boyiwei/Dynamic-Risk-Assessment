@@ -43,6 +43,6 @@ for iteration in {1..20}; do
     echo "All evaluations completed."
 
     # grade benchmark
-    python analysis/grade_benchmark.py --model_name "${model_name}_adas${iteration}" --k0 5 --dump_to_adas --train_set
+    python analysis/grade_benchmark.py --model_name "${model_name}_adas${iteration}" --k0 5 --max_k 1 --dump_to_adas --train_set
 done
     
