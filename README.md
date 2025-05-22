@@ -7,8 +7,8 @@ This repository provides an original implementation of *Dynamic Risk Assessment 
 <img src="assets/radar_chart_animation.gif" width="500"/> -->
 
 <div align="center">
-  <img src="assets/main.png" width="565" style="display: inline-block; margin-right: 10px;"/>
-  <img src="assets/radar_chart_animation.gif" width="300" style="display: inline-block;"/>
+  <img src="assets/main.png" width="500" style="display: inline-block; margin-right: 10px;"/>
+  <img src="assets/radar_chart_animation.gif" width="268" style="display: inline-block;"/>
 </div>
 
 ## Installation
