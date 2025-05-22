@@ -1,7 +1,8 @@
 # Dynamic Risk Assessment for Offensive Cybersecurity Agents
 
 This repository provides an original implementation of *Dynamic Risk Assessment for Offensive Cybersecurity Agents* by Boyi Wei, Benedikt Stroebl, Jiacen Xu, Joie Zhang, Zhou Li, and Peter Henderson. (*Equal contribution)
-![](assets/main.png)
+
+<iframe src='assets/interactive_radar_chart.html' width='100%' height='800px' frameBorder='0'></iframe>
 
 ## Installation
 
