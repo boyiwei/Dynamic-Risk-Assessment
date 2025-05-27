@@ -1,6 +1,6 @@
 # Dynamic Risk Assessment for Offensive Cybersecurity Agents
 
-This repository provides an original implementation of *Dynamic Risk Assessment for Offensive Cybersecurity Agents* by Boyi Wei*, Benedikt Stroebl*, Jiacen Xu, Joie Zhang, Zhou Li, and Peter Henderson. (*Equal contribution)
+This repository provides an original implementation of [*Dynamic Risk Assessment for Offensive Cybersecurity Agents*](https://arxiv.org/pdf/2505.18384) by Boyi Wei*, Benedikt Stroebl*, Jiacen Xu, Joie Zhang, Zhou Li, and Peter Henderson. (*Equal contribution)
 
 <!-- <img src="assets/main.png" width="500" style="display: block; margin: auto;"/>
 
@@ -146,4 +146,17 @@ python grade_benchmark.py --model_name "Qwen2.5-Coder-32B-Instruct_adas${iterati
 Key arguments:
 1. `iteration`: the iteration id needed to be evaluated. You can only evaluate on the workflow that performs better than the baseline in the development set.
 
+## Citing
 
+If you find our work useful, please cite our work 😊
+```
+@misc{wei2025dynamicriskassessmentsoffensive,
+      title={Dynamic Risk Assessments for Offensive Cybersecurity Agents}, 
+      author={Boyi Wei and Benedikt Stroebl and Jiacen Xu and Joie Zhang and Zhou Li and Peter Henderson},
+      year={2025},
+      eprint={2505.18384},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR},
+      url={https://arxiv.org/abs/2505.18384}, 
+}
+```
