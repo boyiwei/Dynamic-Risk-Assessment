@@ -21,7 +21,7 @@ git clone --recurse-submodules git@github.com:boyiwei/Dynamic-Risk-Assessment.gi
 ```
 
 
-Simply run the following command to install the dependencies:
+Run the following command to install the dependencies:
 ```bash
 pip install -r requirements.txt
 ```
