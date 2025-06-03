@@ -13,7 +13,7 @@
 
 <p align='center' style="text-align:center;font-size:2.5 em;">
 <b>
-    <a href="https://arxiv.org/abs/2505.18384" target="_blank" style="text-decoration: none;">Paper</a>&nbsp;|&nbsp;<a href="BLOGPOST_URL_PLACEHOLDER" target="_blank" style="text-decoration: none;">Blogpost</a>&nbsp;|&nbsp;<a href="TWITTER_URL_PLACEHOLDER" target="_blank" style="text-decoration: none;">Twitter</a>&nbsp;
+    <a href="https://arxiv.org/abs/2505.18384" target="_blank" style="text-decoration: none;">Paper</a>&nbsp;|&nbsp;<a href="BLOGPOST_URL_PLACEHOLDER" target="_blank" style="text-decoration: none;">Blogpost</a>&nbsp;|&nbsp;<a href="https://x.com/wei_boyi/status/1929926730321678704" target="_blank" style="text-decoration: none;">Twitter</a>&nbsp;
 </b>
 </p>
 
