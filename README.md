@@ -1,6 +1,21 @@
-# Dynamic Risk Assessment for Offensive Cybersecurity Agents
+<h1 align='center' style="text-align:center; font-weight:bold; font-size:2.0em;letter-spacing:2.0px;"> Dynamic Risk Assessment for Offensive Cybersecurity Agents </h1>
+<p align='center' style="text-align:center;font-size:1.25em;">
+    <a href="https://www.boyiwei.com/" target="_blank" style="text-decoration: none;">Boyi Wei<sup>1,*</sup></a>&nbsp;,&nbsp;
+    <a href="https://benediktstroebl.github.io/" target="_blank" style="text-decoration: none;">Benedikt Stroebl<sup>1,*</sup></a>&nbsp;,&nbsp;
+    <a href="https://c0ldstudy.github.io/about/" target="_blank" style="text-decoration: none;">Jiacen Xu<sup>2</sup></a>&nbsp;,&nbsp;
+  <a href="https://scholar.google.com/citations?user=ql66dSwAAAAJ&hl=en" target="_blank" style="text-decoration: none;">Joie Zhang<sup>2</sup></a>&nbsp;,&nbsp;
+    <a href="https://faculty.sites.uci.edu/zhouli/" target="_blank" style="text-decoration: none;">Zhou Li<sup>2</sup></a>&nbsp;,&nbsp;
+    <a href="https://www.peterhenderson.co/" target="_blank" style="text-decoration: none;">Peter Henderson<sup>1</sup></a>&nbsp;&nbsp; 
+    <br/> 
+<sup>*</sup>Equal Contribution<br>
+<sup>1</sup>Princeton University&nbsp;&nbsp;&nbsp;&nbsp;<sup>2</sup>University of California, Irvine<br/> 
+</p>
 
-This repository provides an original implementation of [*Dynamic Risk Assessment for Offensive Cybersecurity Agents*](https://arxiv.org/abs/2505.18384) by Boyi Wei*, Benedikt Stroebl*, Jiacen Xu, Joie Zhang, Zhou Li, and Peter Henderson. (*Equal contribution)
+<p align='center' style="text-align:center;font-size:2.5 em;">
+<b>
+    <a href="https://arxiv.org/abs/2505.18384" target="_blank" style="text-decoration: none;">Paper</a>&nbsp;|&nbsp;<a href="BLOGPOST_URL_PLACEHOLDER" target="_blank" style="text-decoration: none;">Blogpost</a>&nbsp;|&nbsp;<a href="TWITTER_URL_PLACEHOLDER" target="_blank" style="text-decoration: none;">Twitter</a>&nbsp;
+</b>
+</p>
 
 <!-- <img src="assets/main.png" width="500" style="display: block; margin: auto;"/>
 
