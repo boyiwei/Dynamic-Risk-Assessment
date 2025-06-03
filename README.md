@@ -3,7 +3,7 @@
     <a href="https://www.boyiwei.com/" target="_blank" style="text-decoration: none;">Boyi Wei<sup>1,*</sup></a>&nbsp;,&nbsp;
     <a href="https://benediktstroebl.github.io/" target="_blank" style="text-decoration: none;">Benedikt Stroebl<sup>1,*</sup></a>&nbsp;,&nbsp;
     <a href="https://c0ldstudy.github.io/about/" target="_blank" style="text-decoration: none;">Jiacen Xu<sup>2</sup></a>&nbsp;,&nbsp;
-  <a href="https://scholar.google.com/citations?user=ql66dSwAAAAJ&hl=en" target="_blank" style="text-decoration: none;">Joie Zhang<sup>2</sup></a>&nbsp;,&nbsp;
+  <a href="https://scholar.google.com/citations?user=ql66dSwAAAAJ&hl=en" target="_blank" style="text-decoration: none;">Joie Zhang<sup>1</sup></a>&nbsp;,&nbsp;
     <a href="https://faculty.sites.uci.edu/zhouli/" target="_blank" style="text-decoration: none;">Zhou Li<sup>2</sup></a>&nbsp;,&nbsp;
     <a href="https://www.peterhenderson.co/" target="_blank" style="text-decoration: none;">Peter Henderson<sup>1</sup></a>&nbsp;&nbsp; 
     <br/> 
